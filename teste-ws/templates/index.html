@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Example</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            var socket = io();
+
+            socket.on('connect', function() {
+                socket.send('User has connected!');
+            });
+
+            socket.on('response', function(data) {
+                document.getElementById('messages').innerHTML += '<br>' + data.data;
+            });
+
+            document.getElementById('sendButton').onclick = function() {
+                var text = document.getElementById('myMessage').value;
+                socket.send(text);
+                document.getElementById('myMessage').value = '';
+            };
+
+            // Adiciona envio dos comandos para cada um dos botões
+            document.getElementById('upButton').onclick = function() {
+                var text = {"msg":"Vai para Cima!", "command":"up"};
+                socket.send(text);
+            };
+
+            document.getElementById('downButton').onclick = function() {
+                var text = {"msg":"Vai para Baixo!", "command":"down"};
+                socket.send(text);
+            };
+
+            document.getElementById('leftButton').onclick = function() {
+                var text = {"msg":"Vai para Esquerda!", "command":"left"};
+                socket.send(text);
+            };
+
+            document.getElementById('rightButton').onclick = function() {
+                var text = {"msg":"Vai para Direita!", "command":"right"};
+                socket.send(text);
+            };
+        });
+    </script>
+</head>
+<body>
+    <h1>WebSocket Communication</h1>
+    <input type="text" id="myMessage">
+    <button id="sendButton">Send</button>
+    <button id="upButton">Up</button>
+    <button id="downButton">Down</button>
+    <button id="leftButton">Left</button>
+    <button id="rightButton">Right</button>
+    <div id="messages"></div>
+</body>
+</html>
