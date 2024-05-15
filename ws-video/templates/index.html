@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Video Stream</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+</head>
+<body>
+    <h1>Webcam Video Stream</h1>
+    <video id="video" width="640" height="480" autoplay></video>
+    <div>
+        <h2>Received Image:</h2>
+        <img id="receivedImage" src="" alt="Received Image" style="max-width: 100%;">
+    </div>
+
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        var video = document.getElementById('video');
+        var canvas = document.createElement('canvas');
+        var context = canvas.getContext('2d');
+
+        socket.on('image_response', function(data) {
+            console.log('Image received from server');
+            var imageElement = document.getElementById('receivedImage');
+            imageElement.src = data.image;
+        });
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch(function(err) {
+                console.error('Error accessing webcam: ' + err);
+            });
+
+        function sendFrame() {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            var imageData = canvas.toDataURL('image/png');
+            socket.emit('frame', { 'image': imageData });
+        }
+
+        setInterval(sendFrame, 100);  // Send a frame every 100ms
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+</head>
+<body>
+    <h1>Upload Image</h1>
+    <input type="file" id="imageInput">
+    <button onclick="sendImage()">Send Image</button>
+    <div>
+        <h2>Received Image:</h2>
+        <img id="receivedImage" src="" alt="Received Image" style="max-width: 100%;">
+    </div>
+
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket.on('response', function(msg) {
+            console.log(msg.data);
+        });
+
+        socket.on('image_response', function(data) {
+            console.log('Image received from server');
+            var imageElement = document.getElementById('receivedImage');
+            imageElement.src = data.image;
+        });
+
+        function sendImage() {
+            var file = document.getElementById('imageInput').files[0];
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                var imageData = event.target.result;
+                socket.emit('image', { 'image': imageData });
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>
