@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket with Flask</title>
+</head>
+<body>
+    <h1>WebSocket with Flask</h1>
+    <button onclick="sendText()">Send Text</button>
+    <button onclick="sendJson()">Send JSON</button>
+    <button onclick="sendVideo()">Send Video</button>
+
+    <script>
+        var ws = new WebSocket('ws://localhost:6789');
+
+        ws.onopen = function() {
+            console.log('Connected to WebSocket server');
+        };
+
+        ws.onmessage = function(event) {
+            console.log('Response from server:', event.data);
+        };
+
+        function sendText() {
+            ws.send(JSON.stringify({ type: 'text', message: 'Hello, server!' }));
+        }
+
+        function sendJson() {
+            ws.send(JSON.stringify({ type: 'json', message: 'Hello, server!', number: 42 }));
+        }
+
+        function sendVideo() {
+            // Simulating video data as base64 encoded string
+            var videoData = btoa('Sample video data');
+            ws.send(JSON.stringify({ type: 'video', data: videoData }));
+        }
+    </script>
+</body>
+</html>
