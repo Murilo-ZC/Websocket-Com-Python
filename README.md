@@ -7,6 +7,7 @@ Implementado até o momento:
 - [x] Cliente Websocket
 - [x] Comunicação entre servidor e cliente - Texto
 - [x] Comunicação entre servidor e cliente - JSON
-- [ ] Comunicação entre servidor e cliente - Vídeo
+- [x] Comunicação entre servidor e cliente - Imagem
+- [x] Comunicação entre servidor e cliente - Vídeo
 
 Ainda terminar implementação do vídeo.
